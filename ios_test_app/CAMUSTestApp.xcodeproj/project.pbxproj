@@ -67,7 +67,6 @@
 				1D3A8A982C12345678901234 /* camus_segmentation_real_weights.onnx */,
 				1D3A8A9A2C12345678901234 /* Info.plist */,
 			);
-			path = CAMUSTestApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
