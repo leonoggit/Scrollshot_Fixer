@@ -53,13 +53,12 @@ class CAMUSSegmentationModel {
             
             // Performance optimizations
             try options.setLogSeverityLevel(ORTLoggingLevel.warning)
-            try options.setIntraOpNumThreads(DeviceCapabilityChecker.getRecommendedThreadCount())
-            try options.setInterOpNumThreads(1)
+            try options.setIntraOpNumThreads(Int32(DeviceCapabilityChecker.getRecommendedThreadCount()))
             try options.setGraphOptimizationLevel(.all)
             
             // Memory optimizations
-            try options.addConfigEntry("session.memory.enable_memory_pattern", value: "1")
-            try options.addConfigEntry("session.memory.enable_memory_arena_shrinkage", value: "1")
+            try options.addConfigEntry(withKey: "session.memory.enable_memory_pattern", value: "1")
+            try options.addConfigEntry(withKey: "session.memory.enable_memory_arena_shrinkage", value: "1")
             
             // iOS-specific optimizations
             #if !targetEnvironment(simulator)
@@ -192,7 +191,7 @@ class CAMUSSegmentationModel {
         let startTime = CFAbsoluteTimeGetCurrent()
         let outputs = try session.run(
             withInputs: [inputName: inputTensor],
-            outputNames: try session.outputNames(),
+            outputNames: Set(try session.outputNames()),
             runOptions: nil
         )
         let inferenceTime = CFAbsoluteTimeGetCurrent() - startTime
@@ -279,7 +278,7 @@ extension CAMUSSegmentationModel {
         }
         
         // Output shape: [1, 3, 256, 256] - 3 classes (background, LV cavity, LV wall)
-        let batchSize = 1
+        let _ = 1  // batchSize (unused but kept for clarity)
         let numClasses = 3
         let height = 256
         let width = 256
