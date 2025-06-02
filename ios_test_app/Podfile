@@ -6,9 +6,6 @@ target 'CAMUSTestApp' do
   # ONNX Runtime for model inference
   pod 'onnxruntime-objc', '~> 1.16.0'
   
-  # Additional dependencies for video processing
-  pod 'AVFoundation'
-  
 end
 
 post_install do |installer|

@@ -33,20 +33,21 @@ A complete iOS application that allows users to upload 4-chamber ultrasound vide
 
 ### Setup Instructions
 
-1. **Clone and Setup**
+1. **Install Dependencies**
    ```bash
    cd ios_test_app
    pod install
    ```
 
-2. **Add Model Files**
-   - Copy `camus_segmentation_real_weights.onnx` (55MB) to project bundle
-   - Ensure model file is included in app target
+2. **Open in Xcode**
+   ```bash
+   open CAMUSTestApp.xcworkspace
+   ```
+   ⚠️ **Important**: Use `.xcworkspace`, not `.xcodeproj` after running pod install
 
-3. **Copy Core Components**
-   - Copy `CAMUSSegmentationModel.swift` from the main implementation
-   - Copy `SegmentationDataModels.swift` from the main implementation
-   - These provide the ONNX model integration and data structures
+3. **Build and Run**
+   - Select an iOS simulator (iPhone 14 or later recommended)
+   - Press `⌘+R` to build and run
 
 4. **Build and Run**
    ```bash
