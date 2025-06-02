@@ -1,0 +1,6 @@
+{
+    "github.copilot.enable": {
+        "scminput": true,
+        "markdown": true
+    }
+}

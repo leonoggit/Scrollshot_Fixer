@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: echogains
+Version: 0.1
+License-File: LICENSE
+Requires-Dist: torch
+Requires-Dist: torchvision
+Requires-Dist: coremltools
+Requires-Dist: numpy
+Dynamic: license-file
+Dynamic: requires-dist

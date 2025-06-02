@@ -1,0 +1,48 @@
+# iOS Podfile for CAMUS Segmentation App
+
+platform :ios, '13.0'
+use_frameworks!
+
+target 'CAMUSSegmentation' do
+  # ONNX Runtime for model inference
+  pod 'onnxruntime-c', '~> 1.16.0'
+  pod 'onnxruntime-objc', '~> 1.16.0'
+  
+  # Optional: Additional ML/Image processing utilities
+  # pod 'Accelerate' # Already included in iOS SDK
+  
+  target 'CAMUSSegmentationTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'CAMUSSegmentationUITests' do
+    # Pods for testing
+  end
+end
+
+# Post-install configuration for optimization
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      # Ensure iOS 13+ deployment target
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      
+      # Optimize for performance
+      config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-O'
+      config.build_settings['GCC_OPTIMIZATION_LEVEL'] = '3'
+      
+      # Enable bitcode if needed (disable for ONNX Runtime compatibility)
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      
+      # Ensure proper architecture support
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
+      config.build_settings['VALID_ARCHS'] = 'arm64'
+      
+      # ONNX Runtime specific optimizations
+      if target.name.include?('onnxruntime')
+        config.build_settings['OTHER_CFLAGS'] = '$(inherited) -DONNX_ML=1'
+      end
+    end
+  end
+end
