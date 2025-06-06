@@ -1,0 +1,27 @@
+# Xcode
+*.xcworkspace
+*.xcuserdata/
+*.xcuserdatad/
+DerivedData/
+build/
+
+# CocoaPods
+Pods/
+*.lock
+
+# ONNX Runtime binaries (too large for GitHub)
+**/onnxruntime.framework/onnxruntime
+**/onnxruntime.xcframework/**/*.framework/onnxruntime
+
+# Large model files
+*.onnx
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/settings.json.backup
+
+# Other
+*.pyc
+__pycache__/

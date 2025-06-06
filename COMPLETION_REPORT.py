@@ -85,7 +85,6 @@ The diffusion model has been analyzed with detailed findings and recommendations
 
 The project demonstrates exceptional technical execution with immediate production value
 and a clear path forward for advanced diffusion model capabilities.
-"""
 
 ### Python Usage:
 ```python

@@ -2,5 +2,58 @@
     "github.copilot.enable": {
         "scminput": true,
         "markdown": true
-    }
+    },
+    "workbench.colorCustomizations": {},
+    "editor.quickSuggestions": {
+        "comments": "off",
+        "strings": "off",
+        "other": "off"
+    },
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/DerivedData/**": true,
+        "**/*.xcodeproj/**": true,
+        "**/__pycache__/**": true,
+        "**/Pods/**": true
+    },
+    "files.exclude": {
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true
+    },
+    "extensions.autoUpdate": false,
+    "extensions.autoCheckUpdates": false,
+    "workbench.enableExperiments": false,
+    "telemetry.telemetryLevel": "off",
+    "update.mode": "manual",
+    "extensions.ignoreRecommendations": true,
+    "workbench.startupEditor": "none",
+    "window.restoreWindows": "none",
+    "files.hotExit": "off",
+    "editor.semanticHighlighting.enabled": false,
+    "editor.inlineSuggest.enabled": false,
+    "workbench.settings.enableNaturalLanguageSearch": false,
+    "search.followSymlinks": false,
+    "search.useIgnoreFiles": true,
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "editor.minimap.enabled": false,
+    "breadcrumbs.enabled": false,
+    "editor.lightbulb.enabled": "off",
+    "editor.parameterHints.enabled": false,
+    "editor.suggest.showStatusBar": false,
+    "typescript.suggest.autoImports": false,
+    "javascript.suggest.autoImports": false,
+    "C_Cpp.formatting": "disabled",
+    "clang-format.enable": false,
+    "clang-format.executable": "",
+    "files.defaultLanguage": "",
+    "files.associations": {},
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "workbench.editorAssociations": {},
+    "task.problemMatchers": [],
+    "extensions.autoFormatOnSave": false
 }

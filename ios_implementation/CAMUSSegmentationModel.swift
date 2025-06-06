@@ -26,6 +26,10 @@ class CAMUSSegmentationModel {
     
     private let expectedInputName = "input"     // Adjust based on actual model
     private let expectedOutputName = "output"   // Adjust based on actual model
+
+    // Normalization constants from training dataset
+    private let intensityMean: Float = 76.2786
+    private let intensityStd: Float = 47.6041
     
     // MARK: - Initialization
     
@@ -245,8 +249,8 @@ extension CAMUSSegmentationModel {
             return nil
         }
         
-        // Step 3: Normalize to [0, 1] range (matching training preprocessing)
-        let normalizedData = pixelData.map { Float($0) / 255.0 }
+        // Step 3: Z-score normalization using the training dataset statistics
+        let normalizedData = pixelData.map { (Float($0) - intensityMean) / intensityStd }
         
         // Verify data size
         let expectedSize = 256 * 256
