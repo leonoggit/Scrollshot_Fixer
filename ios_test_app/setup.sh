@@ -6,10 +6,14 @@
 echo "🚀 Setting up CAMUS iOS Test App..."
 echo "=" * 50
 
+# Determine repository root relative to this script
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 # Define source and destination paths
-SOURCE_DIR="/workspaces/Scrollshot_Fixer/ios_implementation"
-DEST_DIR="/workspaces/Scrollshot_Fixer/ios_test_app"
-MODEL_FILE="/workspaces/Scrollshot_Fixer/camus_segmentation_real_weights.onnx"
+SOURCE_DIR="$ROOT_DIR/ios_implementation"
+DEST_DIR="$ROOT_DIR/ios_test_app"
+MODEL_FILE="$ROOT_DIR/camus_segmentation_real_weights.onnx"
 
 # Check if source files exist
 if [ ! -f "$SOURCE_DIR/CAMUSSegmentationModel.swift" ]; then

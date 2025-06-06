@@ -35,7 +35,7 @@ A complete iOS application that allows users to upload 4-chamber ultrasound vide
 
 1. **Install Dependencies**
    ```bash
-   cd ios_test_app
+   cd ios_test_app_final
    pod install
    ```
 
