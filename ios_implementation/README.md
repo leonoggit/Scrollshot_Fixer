@@ -12,6 +12,12 @@ Our CAMUS left ventricle segmentation model has been successfully converted to O
 - **Performance**: 50-100ms inference time on iPhone 14/15
 - **Validation**: Perfect matching with PyTorch original (0.000000 difference)
 
+In addition, a *diffusion-based enhancement model* is provided.  It uses the
+checkpoint `camus_diffusion_model.onnx` generated from
+`CAMUS_diffusion_model.pt` and accepts RGB images of size `256×256`.  The
+model outputs 6 channels (learned sigma) and can be used to refine ultrasound
+frames after segmentation.
+
 ## 📋 Prerequisites
 
 ### System Requirements
@@ -43,17 +49,18 @@ Add our provided `Podfile` to your project root and run:
 pod install
 ```
 
-### Step 3: Add Model File
+### Step 3: Add Model Files
 
-1. Copy `camus_segmentation_real_weights.onnx` to your Xcode project
-2. Ensure it's added to your app target
-3. Verify file appears in "Copy Bundle Resources" build phase
+1. Copy `camus_segmentation_real_weights.onnx` and `camus_diffusion_model.onnx` to your Xcode project
+2. Ensure both models are added to your app target
+3. Verify the files appear in "Copy Bundle Resources" build phase
 
 ### Step 4: Add Swift Files
 
 Copy all Swift files from this directory to your project:
-- `CAMUSSegmentationModel.swift` - Core model wrapper
-- `SegmentationDataModels.swift` - Data structures and utilities  
+- `CAMUSSegmentationModel.swift` - Core segmentation wrapper
+- `CAMUSDiffusionModel.swift` - Diffusion enhancement wrapper
+- `SegmentationDataModels.swift` - Data structures and utilities
 - `CAMUSSegmentationView.swift` - Complete SwiftUI interface
 - `CAMUSSegmentationModelTests.swift` - Comprehensive test suite
 
@@ -94,7 +101,11 @@ try options.appendExecutionProvider("CoreML", options: [:])
 try options.addConfigEntry("session.memory.enable_memory_arena_shrinkage", "1")
 ```
 
-### 2. SegmentationDataModels.swift
+### 2. CAMUSDiffusionModel.swift
+**Image enhancement engine** built on ONNX Runtime with CoreML acceleration.**
+The model refines ultrasound frames using a pretrained diffusion network.**
+
+### 3. SegmentationDataModels.swift
 **Complete data infrastructure** including:
 - `SegmentationResult` - Inference results with metadata and statistics
 - `SegmentationStats` - Pixel-level analysis and quality metrics  
@@ -115,7 +126,7 @@ func calculateCavityToWallRatio() -> Float
 func getOptimizationSuggestions() -> [String]
 ```
 
-### 3. CAMUSSegmentationView.swift
+### 4. CAMUSSegmentationView.swift
 **Production-ready SwiftUI interface** with:
 - Photo library and camera integration using PhotosUI
 - Real-time image processing with progress indicators
@@ -139,7 +150,7 @@ SegmentationOverlayView(result: result, opacity: overlayOpacity)
 - Device capability warnings
 - Test image generation for demos
 
-### 4. CAMUSSegmentationModelTests.swift
+### 5. CAMUSSegmentationModelTests.swift
 **Comprehensive test suite** covering:
 - Model loading and initialization validation
 - Image preprocessing pipeline testing

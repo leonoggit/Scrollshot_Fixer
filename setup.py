@@ -9,5 +9,8 @@ setup(
         "torchvision",
         "coremltools",
         "numpy",
+        "onnx",
+        "onnxruntime",
+        "pillow",
     ],
 )

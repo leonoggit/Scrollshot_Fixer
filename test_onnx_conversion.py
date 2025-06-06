@@ -5,9 +5,14 @@ Author: GitHub Copilot
 Purpose: Test ONNX conversion with our reconstructed model before dealing with weight loading
 """
 
+import os
 import torch
 import torch.onnx
 import numpy as np
+import pytest
+
+if os.environ.get("CI_SKIP_ONNX") == "1":
+    pytest.skip("Skipping ONNX tests due to environment limitations", allow_module_level=True)
 
 # Import our reconstructed model
 from reconstruct_nnunet import ReconstructednnUNet, test_reconstructed_model
