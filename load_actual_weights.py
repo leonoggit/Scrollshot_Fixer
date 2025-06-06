@@ -8,6 +8,7 @@ Purpose: Map and load the actual checkpoint weights into our reconstructed model
 import torch
 import torch.nn as nn
 from collections import OrderedDict
+from pathlib import Path
 from reconstruct_nnunet import ReconstructednnUNet, analyze_nnunet_structure
 
 def create_weight_mapping(model_state_dict, checkpoint_state_dict):
@@ -317,7 +318,9 @@ def main():
     print("=" * 45)
     
     # Load the checkpoint
-    model_path = "/workspaces/Scrollshot_Fixer/model_files/Segmentation model/checkpoint_best.pth"
+    # Use a path relative to this file so the script works from any environment
+    repo_root = Path(__file__).resolve().parent
+    model_path = repo_root / "model_files" / "Segmentation model" / "checkpoint_best.pth"
     checkpoint = torch.load(model_path, map_location='cpu', weights_only=False)
     state_dict = checkpoint['network_weights']
     
