@@ -6,7 +6,7 @@ class UltrasoundSegmentationProcessor: ObservableObject {
     @Published var processingProgress: Double = 0.0
     @Published var isProcessingComplete: Bool = false
     @Published var segmentationResults: [FrameSegmentationResult] = []
-    @Published var currentStatus: String = "Initializing..."
+    @Published var currentStatus: String = "Inicializando..."
     @Published var errorMessage: String?
     
     private let segmentationModel: CAMUSSegmentationModel
@@ -31,7 +31,7 @@ class UltrasoundSegmentationProcessor: ObservableObject {
             self.processingProgress = 0.0
             self.isProcessingComplete = false
             self.segmentationResults = []
-            self.currentStatus = "Initializing..."
+            self.currentStatus = "Inicializando..."
             self.errorMessage = nil
         }
     }
@@ -54,11 +54,19 @@ class UltrasoundSegmentationProcessor: ObservableObject {
     @MainActor
     private func setComplete() {
         self.isProcessingComplete = true
-        self.currentStatus = "Processing complete!"
+        self.currentStatus = "Processamento concluído!"
     }
     
     private func performVideoSegmentation(url: URL) async {
-        await updateStatus("Loading video...")
+        await updateStatus("Carregando vídeo...")
+        
+        // Start accessing security-scoped resource
+        let isAccessingSecurityScopedResource = url.startAccessingSecurityScopedResource()
+        defer {
+            if isAccessingSecurityScopedResource {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
         
         let asset = AVAsset(url: url)
         
@@ -67,22 +75,13 @@ class UltrasoundSegmentationProcessor: ObservableObject {
             let duration = try await asset.load(.duration)
             let tracks = try await asset.load(.tracks)
             
-            // Find video track
-            var videoTrack: AVAssetTrack?
-            for track in tracks {
-                let mediaType = try await track.load(.mediaType)
-                if mediaType == .video {
-                    videoTrack = track
-                    break
-                }
-            }
-            
-            guard let videoTrack = videoTrack else {
-                await setError("No video track found in the selected file")
+            // Get video properties
+            guard tracks.first(where: { $0.mediaType == .video }) != nil else {
+                await setError("Nenhuma trilha de vídeo encontrada no arquivo selecionado")
                 return
             }
             
-            await updateStatus("Extracting frames...")
+            await updateStatus("Extraindo quadros...")
             
             // Create image generator
             let imageGenerator = AVAssetImageGenerator(asset: asset)
@@ -95,9 +94,10 @@ class UltrasoundSegmentationProcessor: ObservableObject {
             let durationSeconds = duration.seconds
             let totalFrames = Int(durationSeconds * frameRate)
             
-            await updateStatus("Processing \(totalFrames) frames...")
+            await updateStatus("Processando \(totalFrames) quadros...")
             
-            var results: [FrameSegmentationResult] = []
+            // Create a local array for collecting results, avoiding capture in concurrent context
+            var localResults: [FrameSegmentationResult] = []
             
             // Process frames
             for frameIndex in 0..<totalFrames {
@@ -112,14 +112,10 @@ class UltrasoundSegmentationProcessor: ObservableObject {
                     let cgImage = try imageGenerator.copyCGImage(at: timeValue, actualTime: nil)
                     let uiImage = UIImage(cgImage: cgImage)
                     
-                    await updateStatus("Segmenting frame \(frameIndex + 1)/\(totalFrames)...")
+                    await updateStatus("Segmentando quadro \(frameIndex + 1)/\(totalFrames)...")
                     
                     // Perform segmentation
-                    let segmentationResult = try await withCheckedThrowingContinuation { continuation in
-                        segmentationModel.predict(image: uiImage) { result in
-                            continuation.resume(with: result)
-                        }
-                    }
+                    let segmentationResult = try segmentationModel.performSegmentation(on: uiImage)
                     
                     // Create visualization
                     let visualizedImage = createSegmentationVisualization(
@@ -135,14 +131,15 @@ class UltrasoundSegmentationProcessor: ObservableObject {
                         visualizedImage: visualizedImage
                     )
                     
-                    results.append(frameResult)
+                    // Add to local results array
+                    localResults.append(frameResult)
                     
                     // Update progress
                     let progress = Double(frameIndex + 1) / Double(totalFrames)
                     await updateProgress(progress)
                     
                 } catch {
-                    print("Failed to process frame \(frameIndex): \(error)")
+                    print("Falha ao processar quadro \(frameIndex): \(error)")
                     // Continue with next frame instead of failing completely
                 }
                 
@@ -150,15 +147,19 @@ class UltrasoundSegmentationProcessor: ObservableObject {
                 try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
             }
             
-            await MainActor.run {
-                self.segmentationResults = results
-            }
+            // Update results on main actor to avoid concurrency issues
+            await updateResults(with: localResults)
             
             await setComplete()
             
         } catch {
-            await setError("Video processing failed: \(error.localizedDescription)")
+            await setError("Falha no processamento do vídeo: \(error.localizedDescription)")
         }
+    }
+    
+    @MainActor
+    private func updateResults(with results: [FrameSegmentationResult]) {
+        self.segmentationResults = results
     }
     
     private func createSegmentationVisualization(

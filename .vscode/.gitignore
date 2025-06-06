@@ -1,0 +1,20 @@
+# Prevent committing problematic VS Code settings
+# Only commit necessary workspace configurations
+
+# Extension state and cache
+extensions.json
+.ropeproject/
+# Temporary files
+*.tmp
+*.temp
+
+# User-specific settings that may cause conflicts
+launch.json.bak
+settings.json.bak
+tasks.json.bak
+
+# Debug configurations (can be user-specific)
+# launch.json (uncomment if needed)
+
+# Extension logs
+*.log
