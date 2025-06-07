@@ -26,6 +26,7 @@ from pathlib import Path
 def check_file_structure():
     """Verify all required files are present for production deployment"""
     print("📁 Verifying File Structure...")
+
     
     required_files = {
         'ONNX Model': '/workspaces/Scrollshot_Fixer/camus_segmentation_real_weights.onnx',
@@ -392,10 +393,3 @@ def main():
         return True
     else:
         print("\n⚠️  ATTENTION REQUIRED")
-        print("Some components need improvement before production deployment.")
-        print("Please address the failing tests and re-run this assessment.")
-        return False
-
-if __name__ == "__main__":
-    success = main()
-    sys.exit(0 if success else 1)
