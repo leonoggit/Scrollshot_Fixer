@@ -63,7 +63,7 @@ class CAMUSDiffusionModel {
         guard let rgbData = resized.rgbData() else { return nil }
 
         do {
-            let tensor = try ORTValue(tensorData: Data(rgbData),
+            let tensor = try ORTValue(tensorData: Data(buffer: rgbData.withUnsafeBytes { $0 }),
                                      elementType: ORTTensorElementDataType.float,
                                      shape: inputShape as [NSNumber])
             let input = ["input": tensor]
