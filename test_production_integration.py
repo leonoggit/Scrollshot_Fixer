@@ -14,6 +14,11 @@ import os
 import sys
 import time
 import subprocess
+import pytest
+
+if os.environ.get("CI_SKIP_ONNX") == "1":
+    pytest.skip("Skipping ONNX tests due to environment limitations", allow_module_level=True)
+
 import onnxruntime as ort
 import numpy as np
 from pathlib import Path
