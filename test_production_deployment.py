@@ -7,11 +7,15 @@ This script validates the segmentation model for production iOS deployment
 by testing all critical components and performance metrics.
 """
 
-import onnxruntime as ort
+import os
+import pytest
 import numpy as np
 import time
-import os
 from PIL import Image
+import onnxruntime as ort
+
+if os.environ.get("CI_SKIP_ONNX") == "1":
+    pytest.skip("Skipping ONNX tests due to environment limitations", allow_module_level=True)
 
 def test_model_loading():
     """Test if the ONNX model loads correctly"""

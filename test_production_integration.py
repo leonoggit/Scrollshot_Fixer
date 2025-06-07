@@ -14,9 +14,13 @@ import os
 import sys
 import time
 import subprocess
+import pytest
 import onnxruntime as ort
 import numpy as np
 from pathlib import Path
+
+if os.environ.get("CI_SKIP_ONNX") == "1":
+    pytest.skip("Skipping ONNX tests due to environment limitations", allow_module_level=True)
 
 def check_file_structure():
     """Verify all required files are present for production deployment"""
